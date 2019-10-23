@@ -1193,11 +1193,13 @@ void SfxObjectShell::GetState_Impl(SfxItemSet &rSet)
                 }
             case SID_SAVEDOC:
                 {
-                    if ( !IsReadOnly() )
-                        rSet.Put(SfxStringItem(
-                            nWhich, SfxResId(STR_SAVEDOC)));
-                    else
+                    SfxViewFrame *pFrame = SfxViewFrame::GetFirst(this);
+                    if ( IsReadOnly() || (pFrame && pFrame->GetViewShell()->isSaveLocked()))
+                    {
                         rSet.DisableItem(nWhich);
+                        break;
+                    }
+                    rSet.Put(SfxStringItem(nWhich, SfxResId(STR_SAVEDOC)));
                 }
                 break;
 

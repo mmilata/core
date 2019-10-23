@@ -169,6 +169,10 @@ static char const sFailOnWarning[] = "FailOnWarning";
 static char const sDocumentService[] = "DocumentService";
 static char const sFilterProvider[] = "FilterProvider";
 static char const sImageFilter[] = "ImageFilter";
+static char const sLockContentExtraction[] = "LockContentExtraction";
+static char const sLockExport[] = "LockExport";
+static char const sLockPrint[] = "LockPrint";
+static char const sLockSave[] = "LockSave";
 
 static bool isMediaDescriptor( sal_uInt16 nSlotId )
 {
@@ -852,6 +856,38 @@ void TransformParameters( sal_uInt16 nSlotId, const uno::Sequence<beans::Propert
                 if (bOK)
                     rSet.Put(SfxStringItem(SID_FILTER_PROVIDER, aVal));
             }
+            else if (aName == sLockContentExtraction)
+            {
+                bool bVal = false;
+                bool bOK = (rProp.Value >>= bVal);
+                DBG_ASSERT( bOK, "invalid type for LockContentExtraction" );
+                if (bOK)
+                    rSet.Put( SfxBoolItem( SID_LOCK_CONTENT_EXTRACTION, bVal ) );
+            }
+            else if (aName == sLockExport)
+            {
+                bool bVal = false;
+                bool bOK = (rProp.Value >>= bVal);
+                DBG_ASSERT( bOK, "invalid type for LockExport" );
+                if (bOK)
+                    rSet.Put( SfxBoolItem( SID_LOCK_EXPORT, bVal ) );
+            }
+            else if (aName == sLockPrint)
+            {
+                bool bVal = false;
+                bool bOK = (rProp.Value >>= bVal);
+                DBG_ASSERT( bOK, "invalid type for LockPrint" );
+                if (bOK)
+                    rSet.Put( SfxBoolItem( SID_LOCK_PRINT, bVal ) );
+            }
+            else if (aName == sLockSave)
+            {
+                bool bVal = false;
+                bool bOK = (rProp.Value >>= bVal);
+                DBG_ASSERT( bOK, "invalid type for LockSave" );
+                if (bOK)
+                    rSet.Put( SfxBoolItem( SID_LOCK_SAVE, bVal ) );
+            }
 #ifdef DBG_UTIL
             else
                 --nFoundArgs;
@@ -1073,6 +1109,14 @@ void TransformItems( sal_uInt16 nSlotId, const SfxItemSet& rSet, uno::Sequence<b
                 ++nAdditional;
             if ( rSet.GetItemState( SID_CONVERT_IMAGES ) == SfxItemState::SET )
                 nAdditional++;
+            if ( rSet.GetItemState( SID_LOCK_CONTENT_EXTRACTION ) == SfxItemState::SET )
+                nAdditional++;
+            if ( rSet.GetItemState( SID_LOCK_EXPORT ) == SfxItemState::SET )
+                nAdditional++;
+            if ( rSet.GetItemState( SID_LOCK_PRINT ) == SfxItemState::SET )
+                nAdditional++;
+            if ( rSet.GetItemState( SID_LOCK_SAVE ) == SfxItemState::SET )
+                nAdditional++;
 
             // consider additional arguments
             nProps += nAdditional;
@@ -1229,6 +1273,14 @@ void TransformItems( sal_uInt16 nSlotId, const SfxItemSet& rSet, uno::Sequence<b
                     if ( nId == SID_SUGGESTEDSAVEASDIR )
                         continue;
                     if ( nId == SID_SUGGESTEDSAVEASNAME )
+                        continue;
+                    if ( nId == SID_LOCK_CONTENT_EXTRACTION )
+                        continue;
+                    if ( nId == SID_LOCK_EXPORT )
+                        continue;
+                    if ( nId == SID_LOCK_PRINT )
+                        continue;
+                    if ( nId == SID_LOCK_SAVE )
                         continue;
                }
 
@@ -1624,6 +1676,26 @@ void TransformItems( sal_uInt16 nSlotId, const SfxItemSet& rSet, uno::Sequence<b
         {
             pValue[nActProp].Name = sImageFilter;
             pValue[nActProp++].Value <<= static_cast<const SfxStringItem*>(pItem)->GetValue();
+        }
+        if ( rSet.GetItemState( SID_LOCK_CONTENT_EXTRACTION, false, &pItem ) == SfxItemState::SET )
+        {
+            pValue[nActProp].Name = sLockContentExtraction;
+            pValue[nActProp++].Value <<= static_cast<const SfxBoolItem*>(pItem)->GetValue() ;
+        }
+        if ( rSet.GetItemState( SID_LOCK_EXPORT, false, &pItem ) == SfxItemState::SET )
+        {
+            pValue[nActProp].Name = sLockExport;
+            pValue[nActProp++].Value <<= static_cast<const SfxBoolItem*>(pItem)->GetValue() ;
+        }
+        if ( rSet.GetItemState( SID_LOCK_PRINT, false, &pItem ) == SfxItemState::SET )
+        {
+            pValue[nActProp].Name = sLockPrint;
+            pValue[nActProp++].Value <<= static_cast<const SfxBoolItem*>(pItem)->GetValue() ;
+        }
+        if ( rSet.GetItemState( SID_LOCK_SAVE, false, &pItem ) == SfxItemState::SET )
+        {
+            pValue[nActProp].Name = sLockSave;
+            pValue[nActProp++].Value <<= static_cast<const SfxBoolItem*>(pItem)->GetValue() ;
         }
     }
 
