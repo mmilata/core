@@ -42,7 +42,6 @@ import java.util.Map;
 
 import javax.swing.JButton;
 import javax.swing.JComponent;
-import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -50,7 +49,7 @@ import javax.swing.JPanel;
 import javax.swing.JToolBar;
 import javax.swing.BorderFactory;
 
-public class ScriptEditorForBeanShell implements ScriptEditor, ActionListener {
+public class ScriptEditorForBeanShell extends ScriptEditor implements ActionListener {
 
     private JFrame frame;
     private String filename;
@@ -58,7 +57,6 @@ public class ScriptEditorForBeanShell implements ScriptEditor, ActionListener {
     private ScriptSourceModel model;
     private ScriptSourceView view;
 
-    private XScriptContext context;
     private URL scriptURL = null;
     private ClassLoader  cl = null;
     private JButton saveBtn;
@@ -225,7 +223,7 @@ public class ScriptEditorForBeanShell implements ScriptEditor, ActionListener {
 
     private ScriptEditorForBeanShell(XScriptContext context, ClassLoader cl,
                                      URL url) {
-        this.context   = context;
+        setContext(context);
         this.scriptURL = url;
         this.model     = new ScriptSourceModel(url);
         this.filename  = url.getFile();
@@ -264,22 +262,6 @@ public class ScriptEditorForBeanShell implements ScriptEditor, ActionListener {
             }
         });
         frame.setVisible(true);
-    }
-
-    // Wraps long error messages
-    class NarrowOptionPane extends JOptionPane {
-        private static final long serialVersionUID = 1L;
-        public int getMaxCharactersPerLineCount() {
-            return 100;
-        }
-    }
-
-    private void showErrorMessage(String message) {
-        JOptionPane optionPane = new NarrowOptionPane();
-        optionPane.setMessage(message);
-        optionPane.setMessageType(JOptionPane.ERROR_MESSAGE);
-        JDialog dialog = optionPane.createDialog(null, "Error");
-        dialog.setVisible(true);
     }
 
     private void initUI() {
