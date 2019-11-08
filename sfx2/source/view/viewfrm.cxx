@@ -434,6 +434,8 @@ void SfxViewFrame::ExecReload_Impl( SfxRequest& rReq )
                  || pVersionItem )
             // <- tdf#82744
             {
+                bNeedsReload = true;
+
                 bool bOK = false;
                 bool bRetryIgnoringLock = false;
                 bool bOpenTemplate = false;
@@ -550,7 +552,7 @@ void SfxViewFrame::ExecReload_Impl( SfxRequest& rReq )
                 }
             }
 
-            rReq.AppendItem( SfxBoolItem( SID_FORCERELOAD, true) );
+            rReq.AppendItem( SfxBoolItem( SID_FORCERELOAD, bNeedsReload) );
             rReq.AppendItem( SfxBoolItem( SID_SILENT, true ));
 
             [[fallthrough]]; //TODO ???
